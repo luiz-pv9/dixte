@@ -37,6 +37,9 @@ func ExactString(str string) JsonValidator {
 	}
 }
 
+// Generates a function that matches the JsonValidator type to compare a string
+// against the specified regexp. The second argument (error) may be returned
+// from the regexp compile function, which the user should handle.
 func RegexpString(expression string) (JsonValidator, error) {
 	regex, err := regexp.Compile(expression)
 	if err != nil {

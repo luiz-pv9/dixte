@@ -119,4 +119,9 @@ func TestRegexpString(t *testing.T) {
 	if fn(123) != false {
 		t.Error("Matched numeric argument")
 	}
+
+	fn, err = RegexpString("asd#${!ÇLAÇSD>>.xz.,!@##!$%[")
+	if err == nil {
+		t.Error("Didn't raise error with invalid regexp")
+	}
 }
