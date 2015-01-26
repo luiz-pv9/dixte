@@ -6,6 +6,13 @@ import (
 
 type JsonValidator func(val interface{}) bool
 
+// This struct is used to validate objects with unknown structure, such as the
+// properties of an event or profile
+type JsonKeyValuePairValidator struct {
+	Key   JsonValidator
+	Value JsonValidator
+}
+
 // Returns true if the specified argument is of the type string
 func AnyString(val interface{}) bool {
 	_, ok := val.(string)
@@ -25,6 +32,8 @@ func AnyBoolean(val interface{}) bool {
 	return ok
 }
 
+// Returns true if the specified argument is a simple json type. A simple json
+// value is string, number or boolean.
 func AnySimpleValue(val interface{}) bool {
 	switch val.(type) {
 	case string, float64, bool:
@@ -34,6 +43,8 @@ func AnySimpleValue(val interface{}) bool {
 	}
 }
 
+// Returns true if the specified argument is a simple json type or null.
+// A simple json value is string, number or boolean.
 func AnySimpleOrNilValue(val interface{}) bool {
 	if val == nil {
 		return true
