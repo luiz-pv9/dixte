@@ -1,5 +1,9 @@
 package jsonvalidation
 
+import (
+	"regexp"
+)
+
 type JsonValidator func(val interface{}) bool
 
 // Returns true if the specified argument is of the type string
@@ -31,4 +35,19 @@ func ExactString(str string) JsonValidator {
 		}
 		return str == stringVal
 	}
+}
+
+func RegexpString(expression string) (JsonValidator, error) {
+	regex, err := regexp.Compile(expression)
+	if err != nil {
+		return nil, err
+	}
+	validator := func(val interface{}) bool {
+		stringVal, ok := val.(string)
+		if !ok {
+			return false
+		}
+		return regex.MatchString(stringVal)
+	}
+	return validator, nil
 }
