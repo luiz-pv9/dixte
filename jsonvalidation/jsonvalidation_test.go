@@ -88,3 +88,12 @@ func TestExactString(t *testing.T) {
 		t.Error("Matched number argument although equal('123', 123)")
 	}
 }
+
+func TestRegexpString(t *testing.T) {
+	var fn JsonValidator
+	fn, err := RegexpString("[ab]foo")
+	if err != nil {
+		t.Error("Didn't compile specified regexp")
+	}
+	fn("luiz")
+}
