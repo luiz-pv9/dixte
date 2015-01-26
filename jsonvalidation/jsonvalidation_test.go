@@ -90,6 +90,19 @@ func TestAnySimpleValue(t *testing.T) {
 	}
 }
 
+func TestAnySimpleOrNilValue(t *testing.T) {
+	var fn JsonValidator
+	fn = AnySimpleOrNilValue
+
+	if fn(nil) != true {
+		t.Error("Didn't match nil value (and it should)")
+	}
+
+	if fn("foobar") != true || fn(float64(123)) != true || fn(true) != true {
+		t.Error("Didn't match simple values not nil")
+	}
+}
+
 func TestExactString(t *testing.T) {
 	var fn JsonValidator
 	fn = ExactString("luiz")
