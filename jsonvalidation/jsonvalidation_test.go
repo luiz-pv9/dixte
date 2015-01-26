@@ -95,4 +95,28 @@ func TestRegexpString(t *testing.T) {
 	if err != nil {
 		t.Error("Didn't compile specified regexp")
 	}
+
+	if fn("bfoo") != true {
+		t.Error("Didn't match with the specified regex")
+	}
+
+	if fn("afoo") != true {
+		t.Error("Didn't match with the specified regex")
+	}
+
+	if fn("cfoo") != false {
+		t.Error("Matched value not in regexp")
+	}
+
+	if fn("") != false {
+		t.Error("Matched empty string")
+	}
+
+	if fn(nil) != false {
+		t.Error("Matched nil argument")
+	}
+
+	if fn(123) != false {
+		t.Error("Matched numeric argument")
+	}
 }
