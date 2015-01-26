@@ -95,5 +95,4 @@ func TestRegexpString(t *testing.T) {
 	if err != nil {
 		t.Error("Didn't compile specified regexp")
 	}
-	fn("luiz")
 }
