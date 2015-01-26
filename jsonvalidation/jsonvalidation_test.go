@@ -64,6 +64,32 @@ func TestAnyBoolean(t *testing.T) {
 	}
 }
 
+func TestAnySimpleValue(t *testing.T) {
+	var fn JsonValidator
+	fn = AnySimpleValue
+
+	if fn(false) != true || fn(true) != true {
+		t.Error("Didn't match boolean values")
+	}
+
+	if fn(float64(123.23)) != true || fn(float64(0)) != true {
+		t.Error("Didn't match json numeric value")
+	}
+
+	if fn(nil) != false {
+		t.Error("Matched nil value")
+	}
+
+	if fn("foobar") != true || fn("") != true {
+		t.Error("Didn't match string value")
+	}
+
+	strLists := []string{"a", "b", "c"}
+	if fn(strLists) != false {
+		t.Error("Matched an array list")
+	}
+}
+
 func TestExactString(t *testing.T) {
 	var fn JsonValidator
 	fn = ExactString("luiz")

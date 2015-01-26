@@ -25,6 +25,22 @@ func AnyBoolean(val interface{}) bool {
 	return ok
 }
 
+func AnySimpleValue(val interface{}) bool {
+	switch val.(type) {
+	case string, float64, bool:
+		return true
+	default:
+		return false
+	}
+}
+
+func AnySimpleOrNilValue(val interface{}) bool {
+	if val == nil {
+		return true
+	}
+	return AnySimpleValue(val)
+}
+
 // Generates a function that matches the JsonValidator type to compare string
 // against the specified value. Usually will be used for keys in a JSON object.
 func ExactString(str string) JsonValidator {
