@@ -105,3 +105,22 @@ func RegexpString(expression string) (JsonValidator, error) {
 	}
 	return validator, nil
 }
+
+func AnyArrayByRules(rules []JsonValidator) JsonValidator {
+	return func(val interface{}) bool {
+		values, ok := val.([]interface{})
+		if !ok {
+			return false
+		}
+		matchedCount := 0
+		for _, e := range values {
+			for _, validator := range rules {
+				if validator(e) == true {
+					matchedCount += 1
+					break
+				}
+			}
+		}
+		return matchedCount == len(values)
+	}
+}

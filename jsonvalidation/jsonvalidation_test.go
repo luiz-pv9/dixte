@@ -168,6 +168,27 @@ func TestRegexpString(t *testing.T) {
 	}
 }
 
+func TestAnyArrayByRules(t *testing.T) {
+	var fn JsonValidator
+	rules := []JsonValidator{AnyString}
+	fn = AnyArrayByRules(rules)
+
+	onlyStrings := []interface{}{"foobar"}
+	if fn(onlyStrings) != true {
+		t.Error("Didn't match array of strings")
+	}
+
+	stringsAndNumbers := []interface{}{"foobar", 20}
+	if fn(stringsAndNumbers) != false {
+		t.Error("Matched array with number in the middle")
+	}
+
+	emptyArray := []interface{}{}
+	if fn(emptyArray) != true {
+		t.Error("Did not match empty array")
+	}
+}
+
 func TestCleanObject(t *testing.T) {
 	data := `
 	{
