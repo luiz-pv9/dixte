@@ -52,6 +52,30 @@ func AnySimpleOrNilValue(val interface{}) bool {
 	return AnySimpleValue(val)
 }
 
+func CleanObject(properties map[string]interface{},
+	validators []*JsonKeyValuePairValidator) map[string]interface{} {
+	cleaned := make(map[string]interface{})
+
+	var validator JsonValidator
+	for key, val := range properties {
+		validator = findValidatorForKey(key, validators)
+		if validator != nil && validator(val) == true {
+			cleaned[key] = val
+		}
+	}
+	return cleaned
+}
+
+func findValidatorForKey(key string,
+	validators []*JsonKeyValuePairValidator) JsonValidator {
+	for _, validator := range validators {
+		if validator.Key(key) == true {
+			return validator.Value
+		}
+	}
+	return nil
+}
+
 // Generates a function that matches the JsonValidator type to compare string
 // against the specified value. Usually will be used for keys in a JSON object.
 func ExactString(str string) JsonValidator {

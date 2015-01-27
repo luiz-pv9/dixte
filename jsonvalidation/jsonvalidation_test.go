@@ -1,6 +1,9 @@
 package jsonvalidation
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 func TestAnyString(t *testing.T) {
 	var fn JsonValidator
@@ -162,5 +165,55 @@ func TestRegexpString(t *testing.T) {
 	fn, err = RegexpString("asd#${!ÇLAÇSD>>.xz.,!@##!$%[")
 	if err == nil {
 		t.Error("Didn't raise error with invalid regexp")
+	}
+}
+
+func TestCleanObject(t *testing.T) {
+	data := `
+	{
+		"name": "Luiz",
+		"age": 20,
+		"premium": false,
+		"$push.colors": ["red"],
+		"numbers": [10, 20]
+	}`
+	var properties map[string]interface{}
+	json.Unmarshal([]byte(data), &properties)
+
+	// One rule with any string -> any simple value
+	var rules []*JsonKeyValuePairValidator
+	rules = []*JsonKeyValuePairValidator{
+		&JsonKeyValuePairValidator{
+			AnyString, AnySimpleOrNilValue,
+		},
+	}
+
+	cleaned := CleanObject(properties, rules)
+	if cleaned["name"] != "Luiz" || cleaned["age"] != float64(20) || cleaned["premium"] != false {
+		t.Error("Removed simple values from the hash that shouldn't be removed.")
+	}
+
+	if cleaned["$push.colors"] != nil || cleaned["numbers"] != nil {
+		t.Error("Didn't remove properties that were not specified in the rules.")
+	}
+
+	// Multiple rules with regexp matching a value before the any string
+	// This should give the same output as the previous one
+	premiumAge, _ := RegexpString("premium|age")
+	rules = []*JsonKeyValuePairValidator{
+		&JsonKeyValuePairValidator{
+			premiumAge, AnySimpleOrNilValue,
+		},
+		&JsonKeyValuePairValidator{
+			AnyString, AnyString,
+		},
+	}
+
+	cleaned = CleanObject(properties, rules)
+	if cleaned["name"] != "Luiz" || cleaned["age"] != float64(20) || cleaned["premium"] != false {
+		t.Error("Removed simple values from the hash that shouldn't be removed.")
+	}
+	if cleaned["$push.colors"] != nil || cleaned["numbers"] != nil {
+		t.Error("Didn't remove properties that were not specified in the rules.")
 	}
 }
