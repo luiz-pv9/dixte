@@ -187,6 +187,23 @@ func TestAnyArrayByRules(t *testing.T) {
 	if fn(emptyArray) != true {
 		t.Error("Did not match empty array")
 	}
+
+	multipleRules := []JsonValidator{AnyString, AnyBoolean}
+	fn = AnyArrayByRules(multipleRules)
+	stringsAndBooleans := []interface{}{"foobar", true, false, "what"}
+	if fn(stringsAndBooleans) != true {
+		t.Error("Didn't match array of only strings and booleans")
+	}
+
+	stringsAndBooleansAndNumbers := []interface{}{"foobar", true, 10, "foo"}
+	if fn(stringsAndBooleansAndNumbers) != false {
+		t.Error("Matched numeric value when only strings and booleans are allowed")
+	}
+
+	stringsAndBooleansWithNil := []interface{}{"foobar", true, nil, "was"}
+	if fn(stringsAndBooleansWithNil) != false {
+		t.Error("Matched array with nil value as an element")
+	}
 }
 
 func TestCleanObject(t *testing.T) {
