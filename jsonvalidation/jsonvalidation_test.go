@@ -206,6 +206,27 @@ func TestAnyArrayByRules(t *testing.T) {
 	}
 }
 
+func TestOrExpression(t *testing.T) {
+	var fn JsonValidator
+	fn = OrExpression([]JsonValidator{AnyString, AnyNumber})
+
+	if fn("foo") != true {
+		t.Error("Didn't match string value")
+	}
+
+	if fn(float64(123)) != true {
+		t.Error("Didn't match a number value")
+	}
+
+	if fn(true) != false {
+		t.Error("Matched a boolean value")
+	}
+
+	if fn(nil) != false {
+		t.Error("Matched a nil value")
+	}
+}
+
 func TestCleanObject(t *testing.T) {
 	data := `
 	{
@@ -254,4 +275,7 @@ func TestCleanObject(t *testing.T) {
 	if cleaned["$push.colors"] != nil || cleaned["numbers"] != nil {
 		t.Error("Didn't remove properties that were not specified in the rules.")
 	}
+
+	// Multiple rules with push allowed for array of strings
+	// pushRules := []JsonValidator{AnyString}
 }

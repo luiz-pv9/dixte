@@ -106,6 +106,17 @@ func RegexpString(expression string) (JsonValidator, error) {
 	return validator, nil
 }
 
+func OrExpression(rules []JsonValidator) JsonValidator {
+	return func(val interface{}) bool {
+		for _, validator := range rules {
+			if validator(val) == true {
+				return true
+			}
+		}
+		return false
+	}
+}
+
 func AnyArrayByRules(rules []JsonValidator) JsonValidator {
 	return func(val interface{}) bool {
 		values, ok := val.([]interface{})
