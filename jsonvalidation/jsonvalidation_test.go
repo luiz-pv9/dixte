@@ -276,6 +276,24 @@ func TestCleanObject(t *testing.T) {
 		t.Error("Didn't remove properties that were not specified in the rules.")
 	}
 
-	// Multiple rules with push allowed for array of strings
-	// pushRules := []JsonValidator{AnyString}
+	// Multiple rules with push allowed for array of strings or a single string
+	pushRegex, _ := RegexpString("\\$push\\.[^\\.]*")
+	rules = []*JsonKeyValuePairValidator{
+		&JsonKeyValuePairValidator{
+			pushRegex, AnyArrayByRules([]JsonValidator{AnyString}),
+		},
+		&JsonKeyValuePairValidator{
+			AnyString, AnySimpleValue,
+		},
+	}
+	cleaned = CleanObject(properties, rules)
+	if cleaned["name"] != "Luiz" || cleaned["age"] != float64(20) || cleaned["premium"] != false {
+		t.Error("Removed simple values from the hash that shouldn't be removed.")
+	}
+	if cleaned["$push.colors"] == nil {
+		t.Error("Didn't match $push operator with array of strings")
+	}
+	if cleaned["numbers"] != nil {
+		t.Error("Matched array of numbers that should not be matched")
+	}
 }
