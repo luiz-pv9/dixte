@@ -26,4 +26,20 @@ func TestLoadFromFile(t *testing.T) {
 	if appConfig.Database.Host != "localhost" {
 		t.Error("Didn't read the specified host of the database")
 	}
+
+	if appConfig.Database.Port != float64(5432) {
+		t.Error("Didn't read the specified port of the database")
+	}
+
+	if appConfig.Database.Name != "dixte_analytics" {
+		t.Error("Didn't read the specified name of the database")
+	}
+
+	if appConfig.Database.Username != "luizpv9" {
+		t.Error("Didn't read the specified username for the database")
+	}
+
+	if appConfig.Database.Password != "password" {
+		t.Error("Didn't read the specified password for the database")
+	}
 }
