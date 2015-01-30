@@ -11,9 +11,11 @@ import (
 type AppConfig struct {
 	Port     float64
 	Database struct {
-		Host string
-		Port float64
-		Name string
+		Host     string
+		Port     float64
+		Name     string
+		Username string
+		Password string
 	}
 }
 
