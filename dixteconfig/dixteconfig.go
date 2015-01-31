@@ -18,6 +18,7 @@ var (
 			Name:     "dixte_analytics",
 			Username: "postgres",
 			Password: "",
+			SSLMode:  "disable",
 		},
 	}
 )
@@ -38,6 +39,7 @@ type DatabaseConfig struct {
 	Name     string
 	Username string
 	Password string
+	SSLMode  string
 }
 
 type ServerConfig struct {
@@ -86,6 +88,10 @@ func (dc *DixteConfig) AssignDatabaseDefaults() {
 
 	if dc.Database.Port == float64(0) {
 		dc.Database.Port = defaultConfig.Database.Port
+	}
+
+	if dc.Database.SSLMode == "" {
+		dc.Database.SSLMode = defaultConfig.Database.SSLMode
 	}
 }
 

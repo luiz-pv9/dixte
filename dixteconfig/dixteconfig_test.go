@@ -63,6 +63,10 @@ func TestLoadFromFileWithMissingData(t *testing.T) {
 	if dixteConfig.Database.Password != "" {
 		t.Error("The password for database wasn't empty")
 	}
+
+	if dixteConfig.Database.SSLMode != "" {
+		t.Error("The SSLMode for database wasn't empty")
+	}
 }
 
 func TestLoadFromFileWithBadFormat(t *testing.T) {
@@ -94,5 +98,9 @@ func TestAssigningDefaultValues(t *testing.T) {
 
 	if dixteConfig.Database.Password != "" {
 		t.Error("Didn't copy the database password from the default struct")
+	}
+
+	if dixteConfig.Database.SSLMode != "disable" {
+		t.Error("Didn't load default value for SSL mode connection")
 	}
 }
