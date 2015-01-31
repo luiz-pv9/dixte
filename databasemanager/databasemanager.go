@@ -4,11 +4,14 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
+	"io/ioutil"
 	"log"
+	"path/filepath"
 )
 
 type Database struct {
-	Conn *sql.DB
+	Conn   *sql.DB
+	Config *dixteconfig.DixteConfig
 }
 
 // Returns the connection to the database using the configuration and
@@ -18,7 +21,7 @@ func Connect(dc *dixteconfig.DixteConfig) (*Database, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Database{db}, nil
+	return &Database{db, dc}, nil
 }
 
 func (db *Database) TablesNames() ([]string, error) {
@@ -79,4 +82,108 @@ func (db *Database) HasMigrationsTable() bool {
 		}
 	}
 	return false
+}
+
+func (db *Database) resetAndSetupMigrations() error {
+	err := db.Reset()
+	if err != nil {
+		return err
+	}
+	err = db.CreateMigrationsTable()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *Database) MigratedFiles() ([]string, error) {
+	migratedFiles := make([]string, 0)
+	rows, err := db.Conn.Query(`SELECT file_name FROM migrations 
+		ORDER BY migration_id ASC`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var migratedFile string
+		if err = rows.Scan(&migratedFile); err != nil {
+			return nil, err
+		}
+		migratedFiles = append(migratedFiles, migratedFile)
+	}
+	return migratedFiles, nil
+}
+
+func (db *Database) loadPendingMigrations(migrationsDir string,
+	migratedFiles []string) ([]string, error) {
+	files, err := ioutil.ReadDir(migrationsDir)
+	if err != nil {
+		return nil, err
+	}
+
+	pendingMigrations := make([]string, 0)
+	for _, file := range files {
+		isMigrated := false
+		for _, migrated := range migratedFiles {
+			if file.Name() == migrated {
+				isMigrated = true
+				break
+			}
+		}
+		if !isMigrated {
+			pendingMigrations = append(pendingMigrations, file.Name())
+		}
+	}
+	return pendingMigrations, nil
+}
+
+func (db *Database) Migrate(migrationsDir string) ([]string, error) {
+	if db.HasMigrationsTable() == false {
+		err := db.resetAndSetupMigrations()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	migratedFiles, err := db.MigratedFiles()
+	if err != nil {
+		return nil, err
+	}
+
+	pendingMigrations, err := db.loadPendingMigrations(migrationsDir, migratedFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, pendingMigration := range pendingMigrations {
+		err = db.migrateFile(filepath.Join(migrationsDir, pendingMigration))
+		if err != nil {
+			return nil, err
+		}
+		err = db.storeMigrationRegister(pendingMigration)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return pendingMigrations, nil
+}
+
+func (db *Database) migrateFile(file string) error {
+	migration, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err
+	}
+	log.Printf("Running migration in file: %v\n", file)
+	_, err = db.Conn.Exec(string(migration))
+	return err
+}
+
+func (db *Database) storeMigrationRegister(migration string) error {
+	log.Printf("Storing migration (%v) in the database...\n\n", migration)
+	_, err := db.Conn.Exec("INSERT INTO migrations (file_name) VALUES ($1)", migration)
+	if err != nil {
+		return err
+	}
+	log.Printf("Migration concluded with success!\n")
+	return nil
 }
