@@ -22,5 +22,14 @@ func TestConnection(t *testing.T) {
 	}
 }
 
+func TestSchemasNames(t *testing.T) {
+	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	db, _ := Connect(dc)
+	_, err := db.TablesNames()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestMigrationTableExists(t *testing.T) {
 }

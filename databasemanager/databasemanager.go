@@ -19,3 +19,25 @@ func Connect(dc *dixteconfig.DixteConfig) (*Database, error) {
 	}
 	return &Database{db}, nil
 }
+
+func (db *Database) TablesNames() ([]string, error) {
+	data, err := db.Conn.Query(`SELECT table_name FROM information_schema.tables 
+		WHERE table_schema = 'public'`)
+	if err != nil {
+		return nil, err
+	}
+	defer data.Close()
+	tablesNames := make([]string, 0)
+	for data.Next() {
+		var tableName string
+		if err := data.Scan(&tableName); err != nil {
+			return nil, err
+		}
+		tablesNames = append(tablesNames, tableName)
+	}
+	return tablesNames, nil
+}
+
+func (db *Database) HasMigrationsTable() bool {
+	return false
+}
