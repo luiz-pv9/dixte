@@ -14,12 +14,6 @@ type Migration struct {
 
 func Connect(dc *dixteconfig.DixteConfig) (*sql.DB, error) {
 	config := make(map[string]string)
-	config["dbname"] = dc.Database.Name
-	config["user"] = dc.Database.Username
-	config["password"] = dc.Database.Password
-	config["host"] = dc.Database.Host
-	config["port"] = dc.Database.Port
-	// config["sslmode"] = dc.Database.SSLMode
 }
 
 // TODO

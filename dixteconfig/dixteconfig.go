@@ -13,12 +13,8 @@ var (
 			Port: float64(5002),
 		},
 		Database: &DatabaseConfig{
-			Host:     "localhost",
-			Port:     float64(5432),
-			Name:     "dixte_analytics",
-			Username: "postgres",
-			Password: "",
-			SSLMode:  "disable",
+			SSLMode: "disable",
+			Dbname: "dixte_analytics"
 		},
 	}
 )
@@ -34,12 +30,17 @@ type DixteConfig struct {
 // DatabaseConfig struct deals with configuration for interacting with
 // PostgreSQL.
 type DatabaseConfig struct {
-	Host     string
-	Port     float64
-	Name     string
-	Username string
-	Password string
-	SSLMode  string
+	Dbname                    string
+	User                      string
+	Password                  string
+	Host                      string
+	Port                      string
+	SSLMode                   string
+	Fallback_Application_Name string
+	Connect_Timeout           string
+	SSLCert                   string
+	SSLKey                    string
+	SSLRootCert               string
 }
 
 type ServerConfig struct {
@@ -67,31 +68,7 @@ func (dc *DixteConfig) AssignServerDefaults() {
 func (dc *DixteConfig) AssignDatabaseDefaults() {
 	if dc.Database == nil {
 		dc.Database = defaultConfig.Database
-		return
-	}
-
-	if dc.Database.Host == "" {
-		dc.Database.Host = defaultConfig.Database.Host
-	}
-
-	if dc.Database.Name == "" {
-		dc.Database.Name = defaultConfig.Database.Name
-	}
-
-	if dc.Database.Username == "" {
-		dc.Database.Username = defaultConfig.Database.Username
-	}
-
-	if dc.Database.Password == "" {
-		dc.Database.Password = defaultConfig.Database.Password
-	}
-
-	if dc.Database.Port == float64(0) {
-		dc.Database.Port = defaultConfig.Database.Port
-	}
-
-	if dc.Database.SSLMode == "" {
-		dc.Database.SSLMode = defaultConfig.Database.SSLMode
+		return nil
 	}
 }
 
