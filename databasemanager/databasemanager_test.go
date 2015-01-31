@@ -4,6 +4,7 @@ import (
 	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -138,9 +139,29 @@ func TestMigrateNewFiles(t *testing.T) {
 	}
 
 	migration := "SELECT schema_name FROM information_schema.schemata"
-	err = ioutil.WriteFile(filepath.Join("..", "migrations", "999-test.sql"),
-		[]byte(migration), 0644)
+	newMigrationPath := filepath.Join("..", "migrations", "999-test.sql")
+	err = ioutil.WriteFile(newMigrationPath, []byte(migration), 0644)
+	if err != nil {
+		t.Error(err)
+	}
 
+	previousMigratedFiles, _ := db.MigratedFiles()
+	previousMigratedFilesLength := len(previousMigratedFiles)
+	migratedFiles, err = db.Migrate(filepath.Join("..", "migrations"))
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(migratedFiles) != 1 {
+		t.Error("Didn't pick up new migration file")
+	}
+
+	currentMigratedFiles, _ := db.MigratedFiles()
+	if len(currentMigratedFiles) != previousMigratedFilesLength+1 {
+		t.Error("Didnt include the new migration in the database table")
+	}
+
+	err = os.Remove(newMigrationPath)
 	if err != nil {
 		t.Error(err)
 	}
