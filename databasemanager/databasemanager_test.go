@@ -22,7 +22,7 @@ func TestConnection(t *testing.T) {
 	}
 }
 
-func TestSchemasNames(t *testing.T) {
+func TestTablesNames(t *testing.T) {
 	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	_, err := db.TablesNames()
