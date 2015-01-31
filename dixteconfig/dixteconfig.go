@@ -10,11 +10,11 @@ var (
 	// missing from the one the user loaded.
 	defaultConfig = DixteConfig{
 		Server: &ServerConfig{
-			Port: float64(5002),
+			Port: "5002",
 		},
 		Database: &DatabaseConfig{
 			SSLMode: "disable",
-			Dbname: "dixte_analytics"
+			Dbname:  "dixte_analytics",
 		},
 	}
 )
@@ -44,7 +44,7 @@ type DatabaseConfig struct {
 }
 
 type ServerConfig struct {
-	Port float64
+	Port string
 }
 
 func (dc *DixteConfig) AssignDefaults() {
@@ -60,7 +60,7 @@ func (dc *DixteConfig) AssignServerDefaults() {
 		dc.Server = defaultConfig.Server
 		return
 	}
-	if dc.Server.Port == float64(0) {
+	if dc.Server.Port == "" {
 		dc.Server.Port = defaultConfig.Server.Port
 	}
 }
@@ -68,7 +68,15 @@ func (dc *DixteConfig) AssignServerDefaults() {
 func (dc *DixteConfig) AssignDatabaseDefaults() {
 	if dc.Database == nil {
 		dc.Database = defaultConfig.Database
-		return nil
+		return
+	}
+
+	if dc.Database.SSLMode == "" {
+		dc.Database.SSLMode = defaultConfig.Database.SSLMode
+	}
+
+	if dc.Database.Dbname == "" {
+		dc.Database.Dbname = defaultConfig.Database.Dbname
 	}
 }
 

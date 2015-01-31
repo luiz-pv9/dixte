@@ -1,12 +1,18 @@
 {
 	"server": {
-		"port": 8080
+		"port": "8080"
 	},
 	"database": {
-		"host": "localhost",
-		"port": 5432,
 		"dbname": "dixte_analytics",
-		"username": "luizpv9",
-		"password": "password"
+		"user": "luizpv9",
+		"password": "password",
+		"host": "localhost",
+		"port": "5432",
+		"sslmode": "disable",
+		"fallback_application_name": "dixte",
+		"connect_timeout": "20",
+		"sslcert": "/home",
+		"sslkey": "cat",
+		"sslrootcert": "/root"
 	}
 }

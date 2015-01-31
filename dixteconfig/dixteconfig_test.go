@@ -20,7 +20,7 @@ func TestLoadFromFile(t *testing.T) {
 		t.Error(err)
 	}
 
-	if dixteConfig.Server.Port != float64(8080) {
+	if dixteConfig.Server.Port != "8080" {
 		t.Error("Didn't read the specified port of 8080")
 	}
 
@@ -28,20 +28,40 @@ func TestLoadFromFile(t *testing.T) {
 		t.Error("Didn't read the specified host of the database")
 	}
 
-	if dixteConfig.Database.Port != float64(5432) {
+	if dixteConfig.Database.Port != "5432" {
 		t.Error("Didn't read the specified port of the database")
 	}
 
-	if dixteConfig.Database.Name != "dixte_analytics" {
+	if dixteConfig.Database.Dbname != "dixte_analytics" {
 		t.Error("Didn't read the specified name of the database")
 	}
 
-	if dixteConfig.Database.Username != "luizpv9" {
+	if dixteConfig.Database.User != "luizpv9" {
 		t.Error("Didn't read the specified username for the database")
 	}
 
 	if dixteConfig.Database.Password != "password" {
 		t.Error("Didn't read the specified password for the database")
+	}
+
+	if dixteConfig.Database.Connect_Timeout != "20" {
+		t.Error("Didn't read the specified connect timeout")
+	}
+
+	if dixteConfig.Database.Fallback_Application_Name != "dixte" {
+		t.Error("Didn't read the specified fallback application name")
+	}
+
+	if dixteConfig.Database.SSLCert != "/home" {
+		t.Error("Didn't read the specified sslcert")
+	}
+
+	if dixteConfig.Database.SSLKey != "cat" {
+		t.Error("Didn't read the specified sslkey")
+	}
+
+	if dixteConfig.Database.SSLRootCert != "/root" {
+		t.Error("Didn't read the specified sslrootcert")
 	}
 }
 
@@ -56,7 +76,7 @@ func TestLoadFromFileWithMissingData(t *testing.T) {
 		t.Error("The server config wasn't set to nil")
 	}
 
-	if dixteConfig.Database.Username != "" {
+	if dixteConfig.Database.User != "" {
 		t.Error("The username for database wasn't empty")
 	}
 
@@ -88,16 +108,12 @@ func TestAssigningDefaultValues(t *testing.T) {
 		t.Error("Didn't assign default server")
 	}
 
-	if dixteConfig.Server.Port != float64(5002) {
+	if dixteConfig.Server.Port != "5002" {
 		t.Error("Didn't copy the port from the default struct")
 	}
 
-	if dixteConfig.Database.Username != "postgres" {
-		t.Error("Didn't copy the database username from the default struct")
-	}
-
-	if dixteConfig.Database.Password != "" {
-		t.Error("Didn't copy the database password from the default struct")
+	if dixteConfig.Database.Dbname != "dixte_analytics" {
+		t.Error("Didn't copy the database name from the default struct")
 	}
 
 	if dixteConfig.Database.SSLMode != "disable" {
