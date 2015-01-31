@@ -74,4 +74,25 @@ func TestLoadFromFileWithBadFormat(t *testing.T) {
 }
 
 func TestAssigningDefaultValues(t *testing.T) {
+	curDir := currentDirectory()
+	dixteConfig, err := LoadFromFile(curDir + "/02_data.json")
+	if err != nil {
+		t.Error(err)
+	}
+	dixteConfig.AssignDefaults()
+	if dixteConfig.Server == nil {
+		t.Error("Didn't assign default server")
+	}
+
+	if dixteConfig.Server.Port != float64(5002) {
+		t.Error("Didn't copy the port from the default struct")
+	}
+
+	if dixteConfig.Database.Username != "postgres" {
+		t.Error("Didn't copy the database username from the default struct")
+	}
+
+	if dixteConfig.Database.Password != "" {
+		t.Error("Didn't copy the database password from the default struct")
+	}
 }
