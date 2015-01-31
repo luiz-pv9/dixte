@@ -3,6 +3,7 @@ package dixteconfig
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -124,8 +125,107 @@ func TestAssigningDefaultValues(t *testing.T) {
 
 func TestDatabaseConfigToConnectionArguments(t *testing.T) {
 	curDir := currentDirectory()
-	_, err := LoadFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
+	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
 	if err != nil {
 		t.Error(err)
+	}
+
+	config := dixteConfig.Database.ToConnectionArguments()
+	if strings.Index(config, "dbname=dixte_analytics") == -1 {
+		t.Error("Didn't include the database name")
+	}
+
+	if strings.Index(config, "user=luizpv9") == -1 {
+		t.Error("Didn't include the user")
+	}
+
+	if strings.Index(config, "password=password") == -1 {
+		t.Error("Didn't include the password")
+	}
+
+	if strings.Index(config, "host=localhost") == -1 {
+		t.Error("Didn't include the host")
+	}
+
+	if strings.Index(config, "port=5432") == -1 {
+		t.Error("Didn't include the port")
+	}
+
+	if strings.Index(config, "sslmode=disable") == -1 {
+		t.Error("Didn't include the sslmode")
+	}
+
+	if strings.Index(config, "fallback_application_name=dixte") == -1 {
+		t.Error("Didn't include the fallback_application_name")
+	}
+
+	if strings.Index(config, "connect_timeout=20") == -1 {
+		t.Error("Didn't include the connect_timeout")
+	}
+
+	if strings.Index(config, "sslcert=/home") == -1 {
+		t.Error("Didn't include the sslcert")
+	}
+
+	if strings.Index(config, "sslkey=cat") == -1 {
+		t.Error("Didn't include the sslkey")
+	}
+
+	if strings.Index(config, "sslrootcert=/root") == -1 {
+		t.Error("Didn't include the sslrootcert")
+	}
+}
+
+func TestDatabaseConfigToConnectionMissingArguments(t *testing.T) {
+	curDir := currentDirectory()
+	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
+	if err != nil {
+		t.Error(err)
+	}
+
+	config := dixteConfig.Database.ToConnectionArguments()
+
+	if strings.Index(config, "dbname=dixte_analytics") == -1 {
+		t.Error("Didn't include the database name")
+	}
+
+	if strings.Index(config, "user") != -1 {
+		t.Error("Shouldn't include user")
+	}
+
+	if strings.Index(config, "password") != -1 {
+		t.Error("Shouldn't include password")
+	}
+
+	if strings.Index(config, "host=localhost") == -1 {
+		t.Error("Didn't include the host")
+	}
+
+	if strings.Index(config, "port=5432") == -1 {
+		t.Error("Didn't include the port")
+	}
+
+	if strings.Index(config, "sslmode=disable") != -1 {
+		t.Error("Shouldn't include the sslmode")
+	}
+
+	if strings.Index(config, "fallback_application_name=dixte") != -1 {
+		t.Error("Shouldn't include the fallback_application_name")
+	}
+
+	if strings.Index(config, "connect_timeout=20") != -1 {
+		t.Error("Shouldn't include the connect_timeout")
+	}
+
+	if strings.Index(config, "sslcert=/home") != -1 {
+		t.Error("Shouldn't include the sslcert")
+	}
+
+	if strings.Index(config, "sslkey=cat") != -1 {
+		t.Error("Shouldn't include the sslkey")
+	}
+
+	if strings.Index(config, "sslrootcert=/root") != -1 {
+		t.Error("Shouldn't include the sslrootcert")
 	}
 }

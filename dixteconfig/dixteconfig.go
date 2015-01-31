@@ -3,6 +3,8 @@ package dixteconfig
 import (
 	"encoding/json"
 	"io/ioutil"
+	"reflect"
+	"strings"
 )
 
 var (
@@ -41,6 +43,23 @@ type DatabaseConfig struct {
 	SSLCert                   string
 	SSLKey                    string
 	SSLRootCert               string
+}
+
+func (d *DatabaseConfig) ToConnectionArguments() string {
+	values := reflect.ValueOf(*d)
+	fields := reflect.Indirect(values)
+	config := ""
+	for i := 0; i < values.NumField(); i++ {
+		field := strings.ToLower(fields.Type().Field(i).Name)
+		value := values.Field(i).String()
+		if value != "" {
+			config += field + "=" + values.Field(i).String()
+			if i < values.NumField()-1 {
+				config += " "
+			}
+		}
+	}
+	return config
 }
 
 type ServerConfig struct {
