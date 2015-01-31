@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
+	"log"
 )
 
 type Database struct {
@@ -38,6 +39,44 @@ func (db *Database) TablesNames() ([]string, error) {
 	return tablesNames, nil
 }
 
+func (db *Database) Reset() error {
+	tablesNames, err := db.TablesNames()
+	if err != nil {
+		return err
+	}
+	for _, tableName := range tablesNames {
+		_, err := db.Conn.Exec("DROP TABLE " + tableName + " CASCADE")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (db *Database) CreateMigrationsTable() error {
+	command := `
+		CREATE SEQUENCE migrations_id_seq;
+		CREATE TABLE migrations (
+			migration_id INT NOT NULL DEFAULT NEXTVAL('migrations_id_seq'),
+			file_name VARCHAR(100) NOT NULL
+		);
+		ALTER SEQUENCE migrations_id_seq OWNED BY migrations.migration_id;
+		ALTER TABLE migrations ADD PRIMARY KEY(migration_id);
+		CREATE UNIQUE INDEX file_name_unique_index ON migrations(file_name);
+	`
+	_, err := db.Conn.Exec(command)
+	return err
+}
+
 func (db *Database) HasMigrationsTable() bool {
+	tablesNames, err := db.TablesNames()
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, tableName := range tablesNames {
+		if tableName == "migrations" {
+			return true
+		}
+	}
 	return false
 }
