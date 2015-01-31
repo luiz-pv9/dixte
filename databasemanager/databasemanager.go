@@ -4,24 +4,18 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
-	"io/ioutil"
-	"path/filepath"
 )
 
-type Migration struct {
-	file string
+type Database struct {
+	Conn *sql.DB
 }
 
-func Connect(dc *dixteconfig.DixteConfig) (*sql.DB, error) {
-	config := make(map[string]string)
-}
-
-// TODO
-// The migrations should actually be stored in the database.
-// Create a table, store the file name and run only what is not there yet.
-func RunMigrations(dc *dixteconfig.DixteConfig) error {
-	migrationsPath := filepath.Join("..", "migrations")
-	files := ioutil.ReadDir(migrationsPath)
-	for _, file := range files {
+// Returns the connection to the database using the configuration and
+// credentials specified in the DixteConfig struct
+func Connect(dc *dixteconfig.DixteConfig) (*Database, error) {
+	db, err := sql.Open("postgres", dc.Database.ToConnectionArguments())
+	if err != nil {
+		return nil, err
 	}
+	return &Database{db}, nil
 }
