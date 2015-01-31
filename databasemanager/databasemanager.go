@@ -90,10 +90,7 @@ func (db *Database) resetAndSetupMigrations() error {
 		return err
 	}
 	err = db.CreateMigrationsTable()
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (db *Database) MigratedFiles() ([]string, error) {
