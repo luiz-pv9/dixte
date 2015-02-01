@@ -18,6 +18,9 @@ var (
 			SSLMode: "disable",
 			Dbname:  "dixte_analytics",
 		},
+		App: &AppConfig{
+			Token_Size: float64(32),
+		},
 	}
 )
 
@@ -27,6 +30,7 @@ var (
 type DixteConfig struct {
 	Server   *ServerConfig
 	Database *DatabaseConfig
+	App      *AppConfig
 }
 
 // DatabaseConfig struct deals with configuration for interacting with
@@ -66,9 +70,14 @@ type ServerConfig struct {
 	Port string
 }
 
+type AppConfig struct {
+	Token_Size float64
+}
+
 func (dc *DixteConfig) AssignDefaults() {
 	dc.AssignServerDefaults()
 	dc.AssignDatabaseDefaults()
+	dc.AssignAppDefaults()
 }
 
 func (dc *DixteConfig) AssignServerDefaults() {
@@ -96,6 +105,17 @@ func (dc *DixteConfig) AssignDatabaseDefaults() {
 
 	if dc.Database.Dbname == "" {
 		dc.Database.Dbname = defaultConfig.Database.Dbname
+	}
+}
+
+func (dc *DixteConfig) AssignAppDefaults() {
+	if dc.App == nil {
+		dc.App = defaultConfig.App
+		return
+	}
+
+	if dc.App.Token_Size == float64(0) {
+		dc.App.Token_Size = defaultConfig.App.Token_Size
 	}
 }
 

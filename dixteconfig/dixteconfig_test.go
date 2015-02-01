@@ -65,6 +65,10 @@ func TestLoadFromFile(t *testing.T) {
 	if dixteConfig.Database.SSLRootCert != "/root" {
 		t.Error("Didn't read the specified sslrootcert")
 	}
+
+	if dixteConfig.App.Token_Size != float64(64) {
+		t.Error("Didn't read the specified token size")
+	}
 }
 
 func TestLoadFromFileWithMissingData(t *testing.T) {
@@ -76,6 +80,10 @@ func TestLoadFromFileWithMissingData(t *testing.T) {
 
 	if dixteConfig.Server != nil {
 		t.Error("The server config wasn't set to nil")
+	}
+
+	if dixteConfig.App != nil {
+		t.Error("The app config wasn't set to nil")
 	}
 
 	if dixteConfig.Database.User != "" {
@@ -112,6 +120,10 @@ func TestAssigningDefaultValues(t *testing.T) {
 
 	if dixteConfig.Server.Port != "5002" {
 		t.Error("Didn't copy the port from the default struct")
+	}
+
+	if dixteConfig.App.Token_Size != float64(32) {
+		t.Error("Didn't copy the token size from the default struct")
 	}
 
 	if dixteConfig.Database.Dbname != "dixte_analytics" {
