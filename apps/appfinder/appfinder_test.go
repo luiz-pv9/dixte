@@ -7,8 +7,8 @@ import (
 )
 
 func connection() *databasemanager.Database {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
-	dixteconfig.LoadFromFile(filepath)
+	dc, _ := dixteconfig.LoadConfigFromFile(filepath.Join("..", "config.json"))
+	dixteconfig.LoadConfigFromFile(filepath)
 	db, _ := databasemanager.Connect(dc)
 	return db
 }

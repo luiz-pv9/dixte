@@ -1,7 +1,7 @@
 package databasemanager
 
 import (
-	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
+	"github.com/luiz-pv9/dixte-analytics/environment"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestConnection(t *testing.T) {
-	dc, err := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, err := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -26,7 +26,7 @@ func TestConnection(t *testing.T) {
 }
 
 func TestTablesNames(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	_, err := db.TablesNames()
 	if err != nil {
@@ -35,7 +35,7 @@ func TestTablesNames(t *testing.T) {
 }
 
 func TestResetDatabase(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	err := db.Reset()
 	if err != nil {
@@ -53,7 +53,7 @@ func TestResetDatabase(t *testing.T) {
 }
 
 func TestCreateMigrationsTable(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	err := db.Reset()
 	if err != nil {
@@ -72,7 +72,7 @@ func TestCreateMigrationsTable(t *testing.T) {
 }
 
 func TestMigrationTableExists(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	err := db.Reset()
 	if err != nil {
@@ -94,7 +94,7 @@ func TestMigrationTableExists(t *testing.T) {
 }
 
 func TestMigrate(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	db.Reset()
 	migratedFiles, err := db.Migrate(filepath.Join("..", "migrations"))
@@ -125,7 +125,7 @@ func TestMigrate(t *testing.T) {
 }
 
 func TestMigrateNewFiles(t *testing.T) {
-	dc, _ := dixteconfig.LoadFromFile(filepath.Join("..", "config.json"))
+	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	db.Reset()
 	migratedFiles, err := db.Migrate(filepath.Join("..", "migrations"))

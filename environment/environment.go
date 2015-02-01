@@ -119,7 +119,7 @@ func (dc *Config) AssignAppDefaults() {
 	}
 }
 
-func LoadFromFile(filepath string) (*Config, error) {
+func LoadConfigFromFile(filepath string) (*Config, error) {
 	content, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err

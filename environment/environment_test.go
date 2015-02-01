@@ -15,9 +15,9 @@ func currentDirectory() string {
 	return dir
 }
 
-func TestLoadFromFile(t *testing.T) {
+func TestLoadConfigFromFile(t *testing.T) {
 	curDir := currentDirectory()
-	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
+	dixteConfig, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -71,9 +71,9 @@ func TestLoadFromFile(t *testing.T) {
 	}
 }
 
-func TestLoadFromFileWithMissingData(t *testing.T) {
+func TestLoadConfigFromFileWithMissingData(t *testing.T) {
 	curDir := currentDirectory()
-	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
+	dixteConfig, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -99,9 +99,9 @@ func TestLoadFromFileWithMissingData(t *testing.T) {
 	}
 }
 
-func TestLoadFromFileWithBadFormat(t *testing.T) {
+func TestLoadConfigFromFileWithBadFormat(t *testing.T) {
 	curDir := currentDirectory()
-	_, err := LoadFromFile(filepath.Join(curDir, "test_data", "03_data.json"))
+	_, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "03_data.json"))
 	if err == nil {
 		t.Error("An error wasn't detected while parsing the dixteConfig")
 	}
@@ -109,7 +109,7 @@ func TestLoadFromFileWithBadFormat(t *testing.T) {
 
 func TestAssigningDefaultValues(t *testing.T) {
 	curDir := currentDirectory()
-	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
+	dixteConfig, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -137,7 +137,7 @@ func TestAssigningDefaultValues(t *testing.T) {
 
 func TestDatabaseConfigToConnectionArguments(t *testing.T) {
 	curDir := currentDirectory()
-	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
+	dixteConfig, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "01_data.json"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -190,7 +190,7 @@ func TestDatabaseConfigToConnectionArguments(t *testing.T) {
 
 func TestDatabaseConfigToConnectionMissingArguments(t *testing.T) {
 	curDir := currentDirectory()
-	dixteConfig, err := LoadFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
+	dixteConfig, err := LoadConfigFromFile(filepath.Join(curDir, "test_data", "02_data.json"))
 	if err != nil {
 		t.Error(err)
 	}

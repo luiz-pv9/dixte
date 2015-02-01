@@ -11,12 +11,12 @@ import (
 
 type Database struct {
 	Conn   *sql.DB
-	Config *dixteconfig.DixteConfig
+	Config *environment.Config
 }
 
 // Returns the connection to the database using the configuration and
-// credentials specified in the DixteConfig struct
-func Connect(dc *dixteconfig.DixteConfig) (*Database, error) {
+// credentials specified in the Config struct
+func Connect(dc *environment.Config) (*Database, error) {
 	db, err := sql.Open("postgres", dc.Database.ToConnectionArguments())
 	if err != nil {
 		return nil, err
