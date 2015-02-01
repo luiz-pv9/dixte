@@ -2,10 +2,12 @@ package apps
 
 import (
 	"database/sql"
+	"github.com/luiz-pv9/dixte-analytics/databasemanager"
 )
 
 // Returns the app found for the specified token or nil if none is found
-func FindByToken(token string, db *sql.DB) (*App, error) {
+func FindByToken(token string) (*App, error) {
+	db := databasemanager.Db.Conn
 	row := db.QueryRow("SELECT app_id, name FROM apps WHERE apps.token = $1",
 		token)
 	var (

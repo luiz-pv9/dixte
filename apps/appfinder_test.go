@@ -7,16 +7,16 @@ import (
 	"testing"
 )
 
-func connection() *databasemanager.Database {
+func connectAppFinder() *databasemanager.Database {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := databasemanager.Connect(dc)
 	return db
 }
 
 func TestByTokenNotFound(t *testing.T) {
-	db := connection()
+	db := connectAppFinder()
 	defer db.Conn.Close()
-	app, err := FindByToken("any-token", db.Conn)
+	app, err := FindByToken("random-token")
 
 	if err != nil {
 		t.Error(err)
@@ -28,6 +28,6 @@ func TestByTokenNotFound(t *testing.T) {
 }
 
 func TestByTokenFound(t *testing.T) {
-	db := connection()
+	db := connectAppFinder()
 	defer db.Conn.Close()
 }

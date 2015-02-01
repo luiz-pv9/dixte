@@ -9,19 +9,30 @@ import (
 	"path/filepath"
 )
 
+var (
+	Db *Database
+)
+
 type Database struct {
-	Conn   *sql.DB
-	Config *environment.Config
+	Conn *sql.DB
 }
 
 // Returns the connection to the database using the configuration and
 // credentials specified in the Config struct
 func Connect(dc *environment.Config) (*Database, error) {
+	if Db != nil {
+		if err := Db.Conn.Ping(); err == nil {
+			log.Printf("RESCUING FROM THE CACHE!\n")
+			return Db, nil
+		}
+	}
 	db, err := sql.Open("postgres", dc.Database.ToConnectionArguments())
 	if err != nil {
 		return nil, err
 	}
-	return &Database{db, dc}, nil
+	dbm := &Database{db}
+	Db = dbm // Cache the connection
+	return dbm, nil
 }
 
 func (db *Database) TablesNames() ([]string, error) {
