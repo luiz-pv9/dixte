@@ -1,4 +1,4 @@
-package appmodel
+package apps
 
 import (
 	"crypto/rand"
