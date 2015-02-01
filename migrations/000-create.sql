@@ -22,6 +22,9 @@ CREATE TABLE events (
 
 ALTER SEQUENCE events_id_seq OWNED BY events.event_id;
 ALTER TABLE events ADD PRIMARY KEY(event_id);
+ALTER TABLE events ADD CONSTRAINT app_token_fk
+	FOREIGN KEY (app_token) REFERENCES apps(token)
+	ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE INDEX app_token_type_index ON events(app_token, type);
 CREATE INDEX app_token_happened_at_index ON events(app_token, happened_at);
 
@@ -39,4 +42,7 @@ CREATE TABLE profiles (
 
 ALTER SEQUENCE profiles_id_seq OWNED BY profiles.profile_id;
 ALTER TABLE profiles ADD PRIMARY KEY(profile_id);
+ALTER TABLE profiles ADD CONSTRAINT app_token_fk
+	FOREIGN KEY (app_token) REFERENCES apps(token)
+	ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE INDEX app_token_index ON profiles(app_token);
