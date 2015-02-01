@@ -1,4 +1,4 @@
-package dixteconfig
+package environment
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 var (
 	// The values in the defaultConfig struct will be used in case they are
 	// missing from the one the user loaded.
-	defaultConfig = DixteConfig{
+	defaultConfig = Config{
 		Server: &ServerConfig{
 			Port: "5002",
 		},
@@ -24,10 +24,10 @@ var (
 	}
 )
 
-// The DixteConfig struct holds the data for initializing dixte analytics. It must
+// The Config struct holds the data for initializing dixte analytics. It must
 // have all configuration necessary to start the service, that means no other
 // data must come from anywhere else.
-type DixteConfig struct {
+type Config struct {
 	Server   *ServerConfig
 	Database *DatabaseConfig
 	App      *AppConfig
@@ -74,17 +74,17 @@ type AppConfig struct {
 	Token_Size float64
 }
 
-func (dc *DixteConfig) AssignDefaults() {
+func (dc *Config) AssignDefaults() {
 	dc.AssignServerDefaults()
 	dc.AssignDatabaseDefaults()
 	dc.AssignAppDefaults()
 }
 
-func (dc *DixteConfig) AssignServerDefaults() {
+func (dc *Config) AssignServerDefaults() {
 	if dc.Server == nil {
 		// Maybe this should be copied instead of referenced.
 		// At first look, there is no reason to change the values from the
-		// DixteConfig struct in runtime.
+		// Config struct in runtime.
 		dc.Server = defaultConfig.Server
 		return
 	}
@@ -93,7 +93,7 @@ func (dc *DixteConfig) AssignServerDefaults() {
 	}
 }
 
-func (dc *DixteConfig) AssignDatabaseDefaults() {
+func (dc *Config) AssignDatabaseDefaults() {
 	if dc.Database == nil {
 		dc.Database = defaultConfig.Database
 		return
@@ -108,7 +108,7 @@ func (dc *DixteConfig) AssignDatabaseDefaults() {
 	}
 }
 
-func (dc *DixteConfig) AssignAppDefaults() {
+func (dc *Config) AssignAppDefaults() {
 	if dc.App == nil {
 		dc.App = defaultConfig.App
 		return
@@ -119,12 +119,12 @@ func (dc *DixteConfig) AssignAppDefaults() {
 	}
 }
 
-func LoadFromFile(filepath string) (*DixteConfig, error) {
+func LoadFromFile(filepath string) (*Config, error) {
 	content, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err
 	}
-	dixteConfig := DixteConfig{}
+	dixteConfig := Config{}
 	if err := json.Unmarshal(content, &dixteConfig); err != nil {
 		return nil, err
 	}

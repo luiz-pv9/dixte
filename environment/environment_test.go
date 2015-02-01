@@ -1,4 +1,4 @@
-package dixteconfig
+package environment
 
 import (
 	"os"

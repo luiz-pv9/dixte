@@ -3,7 +3,7 @@ package databasemanager
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
-	"github.com/luiz-pv9/dixte-analytics/dixteconfig"
+	"github.com/luiz-pv9/dixte-analytics/environment"
 	"io/ioutil"
 	"log"
 	"path/filepath"
