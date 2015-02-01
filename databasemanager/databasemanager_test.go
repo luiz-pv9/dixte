@@ -19,6 +19,7 @@ func TestConnection(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	defer db.Conn.Close()
 	err = db.Conn.Ping()
 	if err != nil {
 		t.Error(err)
@@ -28,6 +29,7 @@ func TestConnection(t *testing.T) {
 func TestTablesNames(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	_, err := db.TablesNames()
 	if err != nil {
 		t.Error(err)
@@ -37,6 +39,7 @@ func TestTablesNames(t *testing.T) {
 func TestResetDatabase(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	err := db.Reset()
 	if err != nil {
 		t.Error(err)
@@ -55,6 +58,7 @@ func TestResetDatabase(t *testing.T) {
 func TestCreateMigrationsTable(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	err := db.Reset()
 	if err != nil {
 		t.Error(err)
@@ -74,6 +78,7 @@ func TestCreateMigrationsTable(t *testing.T) {
 func TestMigrationTableExists(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	err := db.Reset()
 	if err != nil {
 		t.Error(err)
@@ -96,6 +101,7 @@ func TestMigrationTableExists(t *testing.T) {
 func TestMigrate(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	db.Reset()
 	migratedFiles, err := db.Migrate(filepath.Join("..", "migrations"))
 	if err != nil {
@@ -127,6 +133,7 @@ func TestMigrate(t *testing.T) {
 func TestMigrateNewFiles(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
+	defer db.Conn.Close()
 	db.Reset()
 	migratedFiles, err := db.Migrate(filepath.Join("..", "migrations"))
 	if err != nil {
@@ -165,7 +172,4 @@ func TestMigrateNewFiles(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	// Run migrations and create another file
-	// Run migrations again and see changes
 }

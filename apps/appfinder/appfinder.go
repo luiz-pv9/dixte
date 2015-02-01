@@ -13,7 +13,10 @@ func ByToken(token string, db *sql.DB) (*appmodel.App, error) {
 		id   int
 		name string
 	)
-	if err := row.Scan(&id, &name); err != nil {
+	err := row.Scan(&id, &name)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 	return &appmodel.App{Id: id, Name: name, Token: token}, nil
