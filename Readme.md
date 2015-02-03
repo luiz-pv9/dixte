@@ -17,7 +17,8 @@ project is
 Go's JSON unmarshal works great with struct type, and you can validate the arguments by simply checking some `nil` values or empty strings to see if there are some missing fields. But when the structure is unkown, (e.g event and profile properties) it becomes hard to validate some unauthorized values, and easy to forget some case.
 
 **Example**
-```go
+```
+
 	// The syntax API may be a little overwhelming, so let's see each part
 	// AnyObjectByRules is a function that returns a JsonValidator (which is also a function)
 	matcher := AnyObjectByRules([]*JsonKeyValuePairValidator{
@@ -57,11 +58,10 @@ Go's JSON unmarshal works great with struct type, and you can validate the argum
 	}
 ```
 
-* `databasemanager`
-* `environment`
-* `properties`
-* `apps`
-
-* `events` and `profiles`
+#### `databasemanager`
+#### `environment`
+#### `properties`
+#### `apps`
+#### `events` and `profiles`
 	
 	In development
