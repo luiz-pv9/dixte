@@ -22,10 +22,24 @@ func clean(db *databasemanager.Database) {
 }
 
 func TestTracking(t *testing.T) {
-	// err := Track("foobar", map[string]interface{}{
-	// 	"name": "Luiz Paulo",
-	// })
-	// if err != nil {
-	// 	t.Error(err)
-	// }
+	db, _ := connectProfileModel()
+	defer clean(db)
+	err := Track("foobar", map[string]interface{}{
+		"name": "Luiz Paulo",
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	var count int64
+	row := db.Conn.QueryRow("SELECT COUNT(*) FROM properties")
+	err = row.Scan(&count)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if count != int64(1) {
+		t.Error("Didn't register the properties in the database")
+	}
 }
