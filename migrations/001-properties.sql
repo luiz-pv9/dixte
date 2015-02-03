@@ -4,7 +4,8 @@ CREATE TABLE properties (
 	property_id BIGINT NOT NULL DEFAULT NEXTVAL('properties_id_seq'),
 	key VARCHAR(80) NOT NULL,
 	name VARCHAR(80) NOT NULL,
-	type VARCHAR(40) NOT NULL DEFAULT 'string'
+	type VARCHAR(40) NOT NULL DEFAULT 'string',
+	is_large BOOLEAN DEFAULT FALSE
 );
 ALTER SEQUENCE properties_id_seq OWNED BY properties.property_id;
 ALTER TABLE properties ADD PRIMARY KEY(property_id);

@@ -20,6 +20,7 @@ type Property struct {
 	Key        string
 	Name       string
 	Type       string
+	IsLarge    bool
 	Values     []*Value
 }
 
@@ -49,8 +50,9 @@ func (kp *KeyProperties) GetProperty(name string) *Property {
 	return nil
 }
 
-func (kp *KeyProperties) AddProperty(id int64, key, name, _type string) *Property {
-	property := NewProperty(id, key, name, _type)
+func (kp *KeyProperties) AddProperty(id int64, key, name, _type string,
+	isLarge bool) *Property {
+	property := NewProperty(id, key, name, _type, isLarge)
 	if kp.Properties == nil {
 		kp.Properties = make([]*Property, 0)
 	}
@@ -107,12 +109,13 @@ func NewKeyProperties() *KeyProperties {
 	return keyProperties
 }
 
-func NewProperty(id int64, key, name, _type string) *Property {
+func NewProperty(id int64, key, name, _type string, isLarge bool) *Property {
 	property := &Property{
 		PropertyId: id,
 		Key:        key,
 		Name:       name,
 		Type:       _type,
+		IsLarge:    isLarge,
 		Values:     make([]*Value, 0),
 	}
 	return property

@@ -43,3 +43,24 @@ func TestTracking(t *testing.T) {
 		t.Error("Didn't register the properties in the database")
 	}
 }
+
+func TestTrackingTypeDetection(t *testing.T) {
+	db, _ := connectProfileModel()
+	defer clean(db)
+}
+
+func TestTrackingIncrementingValue(t *testing.T) {
+	db, _ := connectProfileModel()
+	defer clean(db)
+}
+
+func TestTrackingMultipleValuesForSameProperty(t *testing.T) {
+	db, _ := connectProfileModel()
+	defer clean(db)
+	// "Luiz" and "Paulo" for same property: "name"
+}
+
+func TestTrackingLargeCollections(t *testing.T) {
+	db, _ := connectProfileModel()
+	defer clean(db)
+}

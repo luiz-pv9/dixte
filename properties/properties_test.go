@@ -10,7 +10,7 @@ func TestKeyPropertiesAllocation(t *testing.T) {
 		t.Errorf("Didn't allocate KeyProperties")
 	}
 
-	property := kp.AddProperty(int64(10), "foobar", "name", "string")
+	property := kp.AddProperty(int64(10), "foobar", "name", "string", false)
 
 	if len(kp.Properties) != 1 {
 		t.Errorf("Didn't add property to array of properties: %v", kp)
@@ -38,7 +38,7 @@ func TestKeyPropertiesAllocation(t *testing.T) {
 }
 
 func TestValuePropertiesAllocation(t *testing.T) {
-	property := NewProperty(int64(10), "foobar", "name", "string")
+	property := NewProperty(int64(10), "foobar", "name", "string", false)
 	if property == nil {
 		t.Error("Didn't allocate the property")
 	}
@@ -70,7 +70,7 @@ func TestValuePropertiesAllocation(t *testing.T) {
 }
 
 func TestGetValue(t *testing.T) {
-	property := NewProperty(int64(10), "foobar", "name", "string")
+	property := NewProperty(int64(10), "foobar", "name", "string", false)
 	if property.GetValue("foo") != nil {
 		t.Error("Didn't return nil when searching for a non existing value")
 	}
@@ -86,7 +86,7 @@ func TestGetValue(t *testing.T) {
 }
 
 func TestGetTotalCountOfProperty(t *testing.T) {
-	property := NewProperty(int64(10), "foobar", "name", "string")
+	property := NewProperty(int64(10), "foobar", "name", "string", false)
 
 	if property.GetTotalCount() != int64(0) {
 		t.Error("Didn't sum count of all properties: %v", property.GetTotalCount())
@@ -112,7 +112,7 @@ func TestGetTotalCountOfKeyProperties(t *testing.T) {
 		t.Error("Total count wasn't zero")
 	}
 
-	property := kp.AddProperty(int64(1), "foobar", "age", "number")
+	property := kp.AddProperty(int64(1), "foobar", "age", "number", false)
 
 	if kp.GetTotalCount() != int64(0) {
 		t.Error("Total count wasn't zero")
@@ -130,7 +130,7 @@ func TestGetTotalCountOfKeyProperties(t *testing.T) {
 		t.Error("Total count wasn't 5")
 	}
 
-	otherProperty := kp.AddProperty(int64(2), "foobar", "name", "string")
+	otherProperty := kp.AddProperty(int64(2), "foobar", "name", "string", false)
 	otherProperty.AddValue(int64(3), "Luiz", int64(3))
 
 	if kp.GetTotalCount() != int64(8) {
