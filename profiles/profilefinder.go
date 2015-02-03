@@ -14,8 +14,8 @@ func LoadFromSqlRow(row *sql.Row) (*Profile, error) {
 	if err != nil {
 		return nil, err
 	}
-	json.Unmarshal(properties, &profile.Properties)
-	return profile, nil
+	err = json.Unmarshal(properties, &profile.Properties)
+	return profile, err
 }
 
 func FindInAppByExternalId(appToken, externalId string) (*Profile, error) {
