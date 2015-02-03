@@ -6,6 +6,7 @@ CREATE TABLE properties (
 	name VARCHAR(80) NOT NULL,
 	type VARCHAR(40) NOT NULL DEFAULT 'string'
 );
+ALTER SEQUENCE properties_id_seq OWNED BY properties.property_id;
 ALTER TABLE properties ADD PRIMARY KEY(property_id);
 CREATE INDEX key_properties ON properties(key);
 
@@ -17,9 +18,9 @@ CREATE TABLE property_values (
 	value VARCHAR(120) NOT NULL,
 	count BIGINT NOT NULL DEFAULT 1
 );
-
+ALTER SEQUENCE property_values_id_seq OWNED BY property_values.property_values_id;
 ALTER TABLE property_values ADD PRIMARY KEY(property_values_id);
 ALTER TABLE property_values ADD CONSTRAINT property_id_fk
-	FOREIGN KEY property_id REFERENCES properties(property_id)
+	FOREIGN KEY (property_id) REFERENCES properties(property_id)
 	ON UPDATE CASCADE ON DELETE CASCADE;
 

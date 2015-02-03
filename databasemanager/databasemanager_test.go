@@ -102,7 +102,10 @@ func TestMigrate(t *testing.T) {
 	dc, _ := environment.LoadConfigFromFile(filepath.Join("..", "config.json"))
 	db, _ := Connect(dc)
 	defer db.Conn.Close()
-	db.Reset()
+	err := db.Reset()
+	if err != nil {
+		t.Error(err)
+	}
 	migratedFiles, err := db.Migrate(filepath.Join("..", "migrations"))
 	if err != nil {
 		t.Error(err)

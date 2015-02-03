@@ -1,7 +1,7 @@
 -- APPS ------------------------------------------------------------------------
 CREATE SEQUENCE apps_id_seq;
 CREATE TABLE apps (
-	app_id  INT NOT NULL DEFAULT NEXTVAL('apps_id_seq'),
+	app_id  BIGINT NOT NULL DEFAULT NEXTVAL('apps_id_seq'),
 	name VARCHAR(80) NOT NULL,
 	token VARCHAR(80) NOT NULL
 );
@@ -12,7 +12,7 @@ CREATE UNIQUE INDEX token_unique_index ON apps(token);
 -- EVENTS ----------------------------------------------------------------------
 CREATE SEQUENCE events_id_seq;
 CREATE TABLE events (
-	event_id      INT NOT NULL DEFAULT NEXTVAL('events_id_seq'),
+	event_id      BIGINT NOT NULL DEFAULT NEXTVAL('events_id_seq'),
 	type          VARCHAR(80) NOT NULL,
 	external_id   VARCHAR(80) NOT NULL,
 	happened_at   TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -32,7 +32,7 @@ CREATE INDEX app_token_happened_at_index ON events(app_token, happened_at);
 -- PROFILES --------------------------------------------------------------------
 CREATE SEQUENCE profiles_id_seq;
 CREATE TABLE profiles (
-	profile_id  INT NOT NULL DEFAULT NEXTVAL('profiles_id_seq'),
+	profile_id  BIGINT NOT NULL DEFAULT NEXTVAL('profiles_id_seq'),
 	external_id VARCHAR(80),
 	created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_at  TIMESTAMP NOT NULL DEFAULT NOW(),
