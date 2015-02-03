@@ -50,6 +50,7 @@ func (db *Database) TablesNames() ([]string, error) {
 		}
 		tablesNames = append(tablesNames, tableName)
 	}
+	data.Close()
 	return tablesNames, nil
 }
 
@@ -119,6 +120,7 @@ func (db *Database) MigratedFiles() ([]string, error) {
 		}
 		migratedFiles = append(migratedFiles, migratedFile)
 	}
+	rows.Close()
 	return migratedFiles, nil
 }
 

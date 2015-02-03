@@ -26,6 +26,7 @@ func FindByKey(key string) (*KeyProperties, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	// Variables used to scan the values returned from the sql statement
 	var (
@@ -55,5 +56,10 @@ func FindByKey(key string) (*KeyProperties, error) {
 			property.AddValue(property_values_id, value, count)
 		}
 	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	rows.Close()
 	return keyProperties, nil
 }
