@@ -19,6 +19,25 @@ Go's JSON unmarshal works great with struct type, and you can validate the argum
 **How it works?**
 The main function of `jsonvalidation` is `CleanObject(data, rules)` that returns a "safe" object with only the attributes that passed in the specified rules.
 
+**Example**
+`
+	matcher := AnyObjectByRules([]*JsonKeyValuePairValidator{
+		&JsonKeyValuePairValidator{
+			ExactString("name"), AnyObjectByRules([]*JsonKeyValuePairValidator{
+				&JsonKeyValuePairValidator{
+					ExactString("first"), AnyString,
+				},
+				&JsonKeyValuePairValidator{
+					ExactString("last"), AnyString,
+				},
+			}),
+		},
+		&JsonKeyValuePairValidator{
+			ExactString("age"), AnyNumber,
+		},
+	})
+`
+
 * `databasemanager`
 * `environment`
 * `properties`

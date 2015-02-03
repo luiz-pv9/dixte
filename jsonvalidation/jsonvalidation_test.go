@@ -297,3 +297,61 @@ func TestCleanObject(t *testing.T) {
 		t.Error("Matched array of numbers that should not be matched")
 	}
 }
+
+func TestNestedObjectMatching(t *testing.T) {
+	matcher := AnyObjectByRules([]*JsonKeyValuePairValidator{
+		&JsonKeyValuePairValidator{
+			ExactString("name"), AnyObjectByRules([]*JsonKeyValuePairValidator{
+				&JsonKeyValuePairValidator{
+					ExactString("first"), AnyString,
+				},
+				&JsonKeyValuePairValidator{
+					ExactString("last"), AnyString,
+				},
+			}),
+		},
+		&JsonKeyValuePairValidator{
+			ExactString("age"), AnyNumber,
+		},
+	})
+
+	obj := map[string]interface{}{
+		"name": map[string]interface{}{
+			"first": "Luiz",
+			"last":  "Vasconcellos",
+		},
+		"age": float64(20),
+	}
+
+	if matcher(obj) != true {
+		t.Error("Didn't match object: %v", obj)
+	}
+
+	if matcher(nil) != false {
+		t.Error("Matched nil argument")
+	}
+
+	obj = map[string]interface{}{
+		"name": map[string]interface{}{
+			"first": "Luiz",
+		},
+		"age": float64(20),
+	}
+
+	if matcher(obj) != true {
+		t.Error("Didn't match object: %v (missing fields)", obj)
+	}
+
+	obj = map[string]interface{}{
+		"name": map[string]interface{}{
+			"first":  "Luiz",
+			"last":   "Vasconcellos",
+			"middle": "Wait for it",
+		},
+		"age": float64(20),
+	}
+
+	if matcher(obj) != false {
+		t.Error("Matched object with unauthorized fields: %v", obj)
+	}
+}

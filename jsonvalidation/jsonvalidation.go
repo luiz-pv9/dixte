@@ -135,3 +135,21 @@ func AnyArrayByRules(rules []JsonValidator) JsonValidator {
 		return matchedCount == len(values)
 	}
 }
+
+func AnyObjectByRules(rules []*JsonKeyValuePairValidator) JsonValidator {
+	return func(val interface{}) bool {
+		properties, ok := val.(map[string]interface{})
+		if !ok {
+			return false
+		}
+		var matched int
+		var validator JsonValidator
+		for key, _val := range properties {
+			validator = findValidatorForKey(key, rules)
+			if validator != nil && validator(_val) == true {
+				matched++
+			}
+		}
+		return matched == len(properties)
+	}
+}
