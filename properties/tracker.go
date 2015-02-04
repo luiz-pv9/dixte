@@ -2,11 +2,12 @@ package properties
 
 import (
 	"github.com/luiz-pv9/dixte/databasemanager"
-	"log"
 	"sync"
 )
 
 var (
+	// Mutex used to syncrhonize access to properties
+	// used by acquireTrack
 	muUpdate *sync.Mutex = &sync.Mutex{}
 )
 
@@ -16,44 +17,78 @@ var (
 // creation is synced here in the app using, and the track must acquire the right
 // to perform the update.
 func Track(key string, properties map[string]interface{}) error {
-	// err := acquireTrack(key, properties)
-	// if err != nil {
-	// 	return err
-	// }
+	kp, err := acquireTrack(key, properties)
+	if err != nil {
+		return err
+	}
+	db := databasemanager.Db.Conn
+
+	for name, val := range properties {
+		property := kp.GetProperty(name)
+		value := property.GetValue(ToStoreValue(val))
+		db.Exec(`UPDATE property_values SET count = count + 1
+			WHERE property_values_id = $1`, value.PropertyValueId)
+	}
 	return nil
 }
 
-func acquireTrack(key string, properties map[string]interface{}) error {
+// This function uses the muUpdate mutex to syncrhonize access to properties.
+// The Track function is only allowed to perform updates incrementing the
+// counter, and this function makes sure the register exists when performing
+// the update (the lock happens in the database).
+// The mutex is necessary to prevent conflict when only creating the properties.
+//
+// The mutex used by acquireTrack will eventually be replaced by a distributed
+// mutex managed by redis.
+func acquireTrack(key string,
+	properties map[string]interface{}) (*KeyProperties, error) {
 	muUpdate.Lock()
 	defer muUpdate.Unlock()
 
 	keyProperties, err := FindByKey(key)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	var propertyId, propertyValueId int64
 	for name, val := range properties {
 		property := keyProperties.GetProperty(name)
 		if property == nil {
-			propertyId, err := createProperty(key, name, IdentifyType(val),
-				false)
+			var (
+				_type   string = IdentifyType(val)
+				isLarge bool   = false
+				count   int64  = int64(0)
+				value   string = ToStoreValue(val)
+			)
+
+			propertyId, err = createProperty(key, name, _type, isLarge)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			propertyValueId, err := createPropertyValue(propertyId, val, int64(0))
+
+			property = keyProperties.AddProperty(propertyId, key, name, _type,
+				isLarge)
+			propertyValueId, err = createPropertyValue(propertyId, value, count)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			log.Println(propertyValueId)
+			property.AddValue(propertyValueId, value, count)
 			continue
 		}
-		value := property.GetValue(ToStoreValue(val))
-		if value == nil {
-			// Run create value SQL
+
+		value := ToStoreValue(val)
+		memValue := property.GetValue(value)
+		if memValue == nil {
+			var count int64 = int64(0)
+			propertyValueId, err = createPropertyValue(property.PropertyId,
+				value, count)
+			if err != nil {
+				return nil, err
+			}
+			property.AddValue(propertyValueId, value, count)
 		}
 	}
-
-	return nil
+	return keyProperties, nil
 }
 
 func createProperty(key, name, _type string, isLarge bool) (int64, error) {
@@ -65,14 +100,14 @@ func createProperty(key, name, _type string, isLarge bool) (int64, error) {
 	return propertyId, err
 }
 
-func createPropertyValue(propertyId int64, val interface{},
+func createPropertyValue(propertyId int64, val string,
 	count int64) (int64, error) {
 	db := databasemanager.Db.Conn
 
 	var propertyValueId int64
 	err := db.QueryRow(`INSERT INTO property_values (property_id, value, count)
-		VALUES ($1, $2, $3) RETURNING property_value_id`,
-		propertyId, ToStoreValue(val), count).Scan(&propertyValueId)
+		VALUES ($1, $2, $3) RETURNING property_values_id`,
+		propertyId, val, count).Scan(&propertyValueId)
 
 	return propertyValueId, err
 }
