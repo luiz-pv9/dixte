@@ -82,6 +82,27 @@ func trackProperties2(key string, db *sql.DB) error {
 	return err
 }
 
+func trackProperties3(key string, db *sql.DB) error {
+	var propertyId int64
+	err := db.QueryRow(`INSERT INTO properties (key, name, type, is_large)
+		VALUES ($1, $2, $3, $4) RETURNING property_id`,
+		key, "name", "string", false).Scan(&propertyId)
+
+	err = db.QueryRow(`INSERT INTO properties (key, name, type, is_large)
+		VALUES ($1, $2, $3, $4) RETURNING property_id`,
+		key, "age", "number", false).Scan(&propertyId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`INSERT INTO property_values (property_id, value, count)
+		VALUES ($1, $2, $3) RETURNING property_values_id`,
+		propertyId, "18", int64(1))
+
+	return err
+}
+
 func TestFindByKey(t *testing.T) {
 	db, _ := connectFinder()
 	defer cleanFinder(db)
@@ -177,5 +198,36 @@ func TestFindByKeyWithMultipleProperties(t *testing.T) {
 
 	if age.GetValue("18") == nil {
 		t.Error("Didn't load value for age")
+	}
+}
+
+// This test just makes sure the SQL is returning just properties
+// related to a specific key
+func TestFindByKeyWithMultipleKeys(t *testing.T) {
+	db, _ := connectFinder()
+	defer cleanFinder(db)
+
+	err := trackProperties1("foobar1", db.Conn)
+	if err != nil {
+		t.Error(err)
+	}
+	err = trackProperties3("foobar2", db.Conn)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	kp, err := FindByKey("foobar1")
+
+	if kp == nil {
+		t.Error("Didn't load property")
+	}
+
+	if kp.GetProperty("name") == nil {
+		t.Error("Didn't load name property")
+	}
+
+	if kp.GetProperty("age") != nil {
+		t.Error("Load property of another key")
 	}
 }
