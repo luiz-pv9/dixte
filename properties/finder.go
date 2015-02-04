@@ -1,17 +1,8 @@
 package properties
 
 import (
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
+	"github.com/luiz-pv9/dixte/databasemanager"
 )
-
-// property_id BIGINT NOT NULL DEFAULT NEXTVAL('properties_id_seq'),
-// key VARCHAR(80) NOT NULL,
-// name VARCHAR(80) NOT NULL,
-// type VARCHAR(40) NOT NULL DEFAULT 'string'
-// property_values_id BIGINT NOT NULL DEFAULT NEXTVAL('property_values_id_seq'),
-// property_id BIGINT NOT NULL,
-// value VARCHAR(120) NOT NULL,
-// count BIGINT NOT NULL DEFAULT 1
 
 func FindByKey(key string) (*KeyProperties, error) {
 	db := databasemanager.Db.Conn
@@ -34,14 +25,14 @@ func FindByKey(key string) (*KeyProperties, error) {
 		_key               string
 		name               string
 		_type              string
-		isLarge            bool
+		is_large           bool
 		property_values_id int64
 		value              string
 		count              int64
 	)
 	keyProperties := NewKeyProperties()
 	for rows.Next() {
-		err = rows.Scan(&property_id, &_key, &name, &_type, &isLarge,
+		err = rows.Scan(&property_id, &_key, &name, &_type, &is_large,
 			&property_values_id, &value, &count)
 
 		if err != nil {
@@ -52,7 +43,7 @@ func FindByKey(key string) (*KeyProperties, error) {
 			property.AddValue(property_values_id, value, count)
 		} else {
 			property = keyProperties.AddProperty(property_id, _key, name,
-				_type, isLarge)
+				_type, is_large)
 			property.AddValue(property_values_id, value, count)
 		}
 	}

@@ -1,7 +1,7 @@
 package databasemanager
 
 import (
-	"github.com/luiz-pv9/dixte-analytics/environment"
+	"github.com/luiz-pv9/dixte/environment"
 	"io/ioutil"
 	"log"
 	"os"

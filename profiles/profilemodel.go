@@ -2,7 +2,7 @@ package profiles
 
 import (
 	"errors"
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
+	"github.com/luiz-pv9/dixte/databasemanager"
 )
 
 type Profile struct {

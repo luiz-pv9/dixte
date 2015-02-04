@@ -1,7 +1,7 @@
 package properties
 
 import (
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
+	"github.com/luiz-pv9/dixte/databasemanager"
 )
 
 func DeleteAll() error {

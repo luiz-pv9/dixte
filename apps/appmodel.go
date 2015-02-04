@@ -3,8 +3,8 @@ package apps
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
-	"github.com/luiz-pv9/dixte-analytics/environment"
+	"github.com/luiz-pv9/dixte/databasemanager"
+	"github.com/luiz-pv9/dixte/environment"
 	"log"
 )
 

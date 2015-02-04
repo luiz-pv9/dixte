@@ -2,7 +2,7 @@ package apps
 
 import (
 	"database/sql"
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
+	"github.com/luiz-pv9/dixte/databasemanager"
 )
 
 func CountRegisteredApps() (int64, error) {

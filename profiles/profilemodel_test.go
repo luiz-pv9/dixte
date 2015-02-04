@@ -1,9 +1,9 @@
 package profiles
 
 import (
-	"github.com/luiz-pv9/dixte-analytics/apps"
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
-	"github.com/luiz-pv9/dixte-analytics/environment"
+	"github.com/luiz-pv9/dixte/apps"
+	"github.com/luiz-pv9/dixte/databasemanager"
+	"github.com/luiz-pv9/dixte/environment"
 	"path/filepath"
 	"testing"
 )

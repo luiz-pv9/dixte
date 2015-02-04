@@ -3,7 +3,7 @@ package profiles
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/luiz-pv9/dixte-analytics/databasemanager"
+	"github.com/luiz-pv9/dixte/databasemanager"
 )
 
 func LoadFromSqlRow(row *sql.Row) (*Profile, error) {
